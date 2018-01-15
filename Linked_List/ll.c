@@ -1,21 +1,27 @@
-#include <stdio.h>
-#include <stdlib.h>
-#include "ll.h"
+struct llnode {            /* since the llnode is a self-referential structure */
+   int val;                /* we can not compile the struct and typedef decl into one */
+   struct llnode *next;
+};
+typedef struct llnode llnode;
 
-/* One of the lessons here is to see that if we want to use a function to malloc something that
- * is a POINTER in the CALLER of the function, then we must send in the ADDRESS of the POINTER
- * to that function.
- * 
- * Recap: if we want to use a function to modify a VARIABLE in the caller
- *        then the CALLER needs to send in the ADDRESS of the VARIABLE
- *
- * Similarly: if we want to use a function to modify a POINTER in the caller
- *            then the CALLER needs to send in the ADDRESS of the POINTER
- *
- * In the code below, ll_add_to_head and ll_add_to_tail are dynamically creating new
- * nodes to be added to the linked list. Any dynamic creation of a node must be via
- * malloc.
- */
+/*
+list of the functions
+int ll_add_to_head( llnode **head, int val);
+int ll_add_to_tail( llnode **head, int val);
+int ll_print_from_head( llnode *p);
+int ll_print_from_tail( llnode *p);
+int ll_free( llnode *p);
+
+int ll_find_by_value(llnode *pList,int val);
+int ll_del_from_tail(llnode **ppList);
+int ll_del_from_head(llnode **ppList);
+int ll_del_by_value(llnode **ppList,int val);
+int ll_insert_in_order(llnode **ppList,int val);
+int ll_concat(llnode **pSrcA,llnode **pSrcB);
+int ll_sort(llnode **ppList);
+int ll_index(llnode *pList, int index);
+int ll_length(llnode *pList);
+*/
 
 int ll_add_to_head( llnode **head, int val) 
 {
@@ -52,25 +58,44 @@ int ll_add_to_tail( llnode **head, int val)
     }
 }
 
-int ll_print( llnode *p) 
+int ll_print_from_head(llnode *p) 
 {
     if (p==NULL) 
     {
         return 0;
     } 
+    printf("val = %d\n",p->val);
+    return ll_print_from_head(p->next);
+}
+
+int ll_print_from_tail(llnode *p)
+{
+    if (p==NULL) 
+    { 
+        return 0; 
+    }
     else 
     {
-        printf("val = %d\n",p->val);
-        return ll_print(p->next);
-    }
+      if (p->next == NULL) 
+      {
+          printf("%d\n",p->val);
+          return 0;
+      }
+      else 
+      {
+          ll_print_from_tail(p->next);
+          printf("%d\n",p->val);
+          return 0;
+      }
+   }
 }
 
 int ll_free( llnode *p) 
 {
     if (p==NULL) {
         return -1;
-    } 
-    else 
+    }
+    else
     {
         llnode *f=p->next;
         free(p);
@@ -84,16 +109,13 @@ int ll_find_by_value(llnode *pList,int val)
     {
         return -1;
     }
+    if((pList->val)==val)
+    {
+        return 0;
+    }
     else
     {
-        if((pList->val)==val)
-        {
-            return 0;
-        }
-        else
-        {
-            return ll_find_by_value(pList->next, val);   
-        }
+        return ll_find_by_value(pList->next, val);
     }
 }
 
@@ -111,23 +133,6 @@ int ll_del_from_tail(llnode **ppList)
     {
         return -1;
     }
-    
-    /*  need to find the last element in list
-        but...we can't back track once we find that element,
-        so we have to manually get the value at the next element
-        if the value at the next element is equal to NULL, then its the last element
-    */
-
-    /*this is the second to last element in the list*/
-    /*
-    if (((*ppList)->next->next) == NULL)
-    {
-        temp = (*ppList)->next;
-        (*ppList)->next = NULL;
-        free(temp);
-        return 0;
-    }
-    */
     if ((*ppList)->next == NULL)
      {
          temp = *ppList;
@@ -180,31 +185,8 @@ int ll_del_by_value(llnode **ppList,int val)
     }
 
 }
-/* my insert in order
-int ll_insert_in_order(llnode **ppList,int val)
-{
-    int r = 0;
-    if(ppList == NULL)
-    {
-        return -1;
-    }
-    
-    if( (((*ppList)->next)) == NULL )
-    {
-        return -1;
-    }
-    else if( (((*ppList)->val) <= val) && (val <= ((*ppList)->next->val)) )
-    {
-        r = ll_add_to_head(&((*ppList)->next), val);
-        return 0;
-    }
-    else
-    {
-        return ll_insert_in_order(&((*ppList)->next),val);
-    }
-}
-*/
 
+/*this function assumes the list is in numerical order*/
 int ll_insert_in_order(llnode **ppList,int val) 
 {
        /* we are going to iterate through the linked list to find the
@@ -289,8 +271,11 @@ int ll_sort(llnode **ppList)
     if(ppList == NULL)
     {
         return -1;
-    } 
-    /*printf("\n\nstart: %d current: %d\n\n",address_start_list->val, (*ppList)->val);*/
+    }
+    if(*ppList == NULL)
+    {
+        return -1;
+    }
     while (swapped)
     {
         swapped = 0;
@@ -302,15 +287,12 @@ int ll_sort(llnode **ppList)
                 (*ppList)->val = (*ppList)->next->val;
                 (*ppList)->next->val = temp;
                 
-                /*printf("\n\nstart: %d current: %d\n\n",address_start_list->val, (*ppList)->val);*/
-                
                 *ppList = address_start_list;
                 swapped = 1;
             }
             else
             {
                 *ppList = (*ppList)->next;
-                /*temp = ll_print(*ppList);*/
             }
         }
     }
@@ -333,4 +315,16 @@ int ll_index(llnode *pList, int index)
         }
     }
     return pList->val;
+}
+
+int ll_length(llnode *pList)
+{
+    llnode *curr = pList;
+    int n = 0;
+    while(curr != NULL)
+    {
+        n += 1;
+        curr = curr->next;
+    }
+    return n;
 }

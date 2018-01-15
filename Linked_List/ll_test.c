@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "ll.h"
+#include <stdlib.h>
+#include "ll.c"
 
 int main(void) 
 {
@@ -9,6 +10,7 @@ int main(void)
     llnode *unordered = NULL;
     int r=0;
     int i=0;
+    int l=0;
 
     printf("List A\n");
     r=ll_add_to_tail(&A,100);
@@ -18,7 +20,7 @@ int main(void)
     {
         r=ll_add_to_tail(&A,i*100);
     }
-    r=ll_print(A);
+    r=ll_print_from_head(A);
 
     printf("\nList B\n");
     r=ll_add_to_tail(&B,100);
@@ -28,7 +30,7 @@ int main(void)
     {
         r=ll_add_to_head(&B,i*100);
     }
-    r=ll_print(B);
+    r=ll_print_from_head(B);
     
     r=ll_add_to_tail(&seq,100);
     r=ll_add_to_tail(&seq,200);
@@ -43,7 +45,7 @@ int main(void)
 
     /*printing seq list*/
     printf("\n\nSequenced List\n");
-    r=ll_print(seq);
+    r=ll_print_from_head(seq);
     
     /*testing ll_find_by_value*/
     printf("\n");
@@ -56,19 +58,19 @@ int main(void)
     printf("\n\nseq with last 2 values deleted\n");
     r=ll_del_from_tail(&seq);
     r=ll_del_from_tail(&seq);
-    r=ll_print(seq);
+    r=ll_print_from_head(seq);
     
     
     /*testing ll_del_from_head*/
     printf("\n\nseq with first value deleted\n");
     r=ll_del_from_head(&seq);
-    r=ll_print(seq);
+    r=ll_print_from_head(seq);
     
 
     /*testing ll_del_by_value*/
     printf("\n\nseq with the value 400 deleted\n");
     r=ll_del_by_value(&seq,400);
-    r=ll_print(seq);
+    r=ll_print_from_head(seq);
     
     
     /*testing ll_insert_in_order*/
@@ -77,13 +79,13 @@ int main(void)
     r=ll_insert_in_order(&seq,400);
     r=ll_insert_in_order(&seq,400);
     r=ll_insert_in_order(&seq,1000);
-    r=ll_print(seq); 
+    r=ll_print_from_head(seq);
    
     
     /*testing ll_concat*/
     printf("\n\nconcatinating A and B\n");
     r=ll_concat(&A,&B);
-    r=ll_print(A);
+    r=ll_print_from_head(A);
     
     
     /*testing ll_sort*/
@@ -95,25 +97,27 @@ int main(void)
     r=ll_add_to_tail(&unordered,300);
     
     printf("Before\n");
-    r=ll_print(unordered);
+    r=ll_print_from_head(unordered);
     printf("\n\nAfter\n");
     r=ll_sort(&unordered);
-    r=ll_print(unordered);
+    r=ll_print_from_head(unordered);
     
     printf("\n\nsorting the concatinated list\n");
     r=ll_sort(&A);
-    r=ll_print(A);
+    r=ll_print_from_head(A);
    
-    /*testing index*/
-    printf("\n\nindexing seq from 0 to 15\n");
-    r=ll_print(seq);
+    /*testing index and length*/
+    printf("\n\nindexing seq from 0 to 14\n");
+    r=ll_print_from_head(seq);
     printf("\n");
-    for(i=0; i<15; i++)
+    l=ll_length(seq);
+    printf("length of seq = %d\n",l);
+    for(i=0; i<l; i++)
     {
         r=ll_index(seq,i);
-        printf("r = %d\n",r);
+        printf("seq at index %d = %d\n",i,r);
     }
-
+    
     /*freeing shit*/
     r=ll_free(A);
     r=ll_free(B);

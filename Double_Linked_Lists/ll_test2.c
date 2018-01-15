@@ -1,5 +1,6 @@
 #include <stdio.h>
-#include "ll.h"
+#include <stdlib.h>
+#include "ll.c"
 
 int main(void)
 {

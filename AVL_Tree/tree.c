@@ -2,130 +2,12 @@ struct TreeNode {
     int val;
     struct TreeNode *left;
     struct TreeNode *right;
+    int height;
 };
 typedef struct TreeNode TreeNode;
 
 #include "ll_queue.c"
-
-/*allows user to put the tree in any order they wish*/
-TreeNode* add(int val)
-{
-    TreeNode *temp = NULL;
-    temp->left = NULL;
-    temp->val = val;
-    temp->right = NULL;
-    return temp;
-}
-
-/*add nodes so that they are in numerical order*/
-int add_in_order(TreeNode **root, int val)
-{
-    if (root == NULL)
-    {
-        return -1;
-    }
-
-    if (*root == NULL)
-    {
-        *root = (TreeNode *)malloc(sizeof(TreeNode));
-        (*root)->left = NULL;
-        (*root)->val = val;
-        (*root)->right = NULL;
-        return 0;
-    }
-    else
-    {
-        if ((*root)->val > val)
-        {
-            return add_in_order(&((*root)->left),val);
-        }
-        else if((*root)->val < val)
-        {   
-            return add_in_order(&((*root)->right),val);
-        }
-        else
-        {
-            return 0;
-        }
-    }
-}
-
-TreeNode* Min(TreeNode *root)
-{
-    TreeNode *min;
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    min = root;
-    while (min->left != NULL)
-    {
-        min = min->left;
-    }
-    return min;
-}
-
-TreeNode* Max(TreeNode *root)
-{
-    TreeNode *max;
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    max = root;
-    while (max->right != NULL)
-    {
-        max = max->right;
-    }
-    return max;
-}
-
-int delete(TreeNode **root, int val)
-{
-    int r = 0;
-    TreeNode *temp = NULL;
-    if (root == NULL)
-    {
-        return -1;
-    }
-    /*base case*/
-    if (*root == NULL)
-    {
-        return -1;
-    }
-    /*navigating to get to the node*/
-    if (val < (*root)->val)
-    {
-        r=delete(&((*root)->left), val);
-    }
-    else if (val > (*root)->val)
-    {
-        r=delete(&((*root)->right), val);
-    }
-    /*we found the node to delete*/
-    else
-    {
-        /*easy case where the node only has 1 child*/
-        if ((*root)->left == NULL)
-        {
-            temp = (*root)->right;
-            /*Heapfree(*root);*/
-            return 0;
-        }
-        /*easy case where the node has 1 child*/
-        else if ((*root)->right == NULL)
-        {
-            temp = (*root)->left;
-            /*free(*root);*/
-            return 0;
-        }
-        /*node has 2 children*/
-        temp = Min((*root)->right);             /*take the min node down the right branch*/
-        (*root)->val = temp->val;               /*assign the min value to the root*/
-        r=delete(&((*root)->right), temp->val); /*then put everthing else on the right*/
-    }
-    return 0;
-}
+#include "avl.c"
 
 /*Transversals (visiting every node in order)*/
 int Pre_Order(TreeNode *root)
@@ -177,12 +59,13 @@ int Post_Order(TreeNode *root)
     }
 }
 
+/*shows each level of the tree*/
 int Level_Order(TreeNode *root)
 {
     int r = 0;
     int count = 0;
-    TreeNode *temp = NULL;
     Queue *q = NULL;
+    TreeNode *temp = NULL;
     if (root == NULL)
     {
         return -1;
@@ -215,15 +98,19 @@ int Level_Order(TreeNode *root)
     return 0;
 }
 
+/*a way to show the heirarchical structure of the tree*/
 int printDepth_rec(TreeNode *root, int tab)
 {
     int i = 0;
+    int bf = 0;
     for(i=0; i<tab; i++)
     {
         printf("\t");
     }
     tab += 1;
-    printf("%d\n",root->val);
+    bf = balance_factor(root);
+    printf("%d,%d,%d\n",root->val,root->height,bf);
+    /*printf("%d\n",root->val);*/
     if (root->right != NULL)
     {
         printDepth_rec(root->right, tab);
@@ -234,12 +121,12 @@ int printDepth_rec(TreeNode *root, int tab)
     }
     return 0;
 }
-
 int printDepth(TreeNode *root)
 {
     return printDepth_rec(root, 0);
 }
 
+/*searching*/
 TreeNode* searchTree(TreeNode *root, int val)
 {
     if (root == NULL)
@@ -260,6 +147,36 @@ TreeNode* searchTree(TreeNode *root, int val)
     }
 }
 
+TreeNode* Min(TreeNode *root)
+{
+    TreeNode *min;
+    if (root == NULL)
+    {
+        return NULL;
+    }
+    min = root;
+    while (min->left != NULL)
+    {
+        min = min->left;
+    }
+    return min;
+}
+
+TreeNode* Max(TreeNode *root)
+{   
+    TreeNode *max;
+    if (root == NULL)
+    {
+        return NULL;
+    }
+    max = root;
+    while (max->right != NULL)
+    {
+        max = max->right;
+    }
+    return max;
+}
+
 int free_tree(TreeNode *root)
 {
     int temp = 0;
@@ -277,3 +194,5 @@ int free_tree(TreeNode *root)
     }
     return 0;
 }
+
+/*make a delete from tree function*/

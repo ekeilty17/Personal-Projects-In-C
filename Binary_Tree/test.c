@@ -19,9 +19,22 @@ int main(void)
     r=add_in_order(&tree, 0);
     r=add_in_order(&tree, -10);
     r=add_in_order(&tree, -5);
-
-    print_tree(tree);
     
+    printf("\nPre Order\n");
+    r=Pre_Order(tree);
+
+    printf("\nIn Order\n");
+    r=In_Order(tree);
+
+    printf("\nPost Order\n");
+    r=Post_Order(tree);
+
+    printf("\nLevel Order\n");
+    r=Level_Order(tree);
+    
+    printf("\nPrint Depth\n");
+    r=printDepth(tree);
+
     printf("\n\n");
     temp=Min(tree);
     printf("%d\n",temp->val);
@@ -35,10 +48,11 @@ int main(void)
     if (temp == NULL)
     {
         printf("NULL\n");
-    }
+    }    
     
-    printf("\n\n");
-    r=printLevelOrder(tree);
+    r=delete(&tree,-5);
+    printf("\nDeteling node with val: -5\n");
+    r=printDepth(tree);
     
     r=free_tree(tree);
 

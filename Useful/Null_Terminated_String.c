@@ -43,8 +43,8 @@ char* concat(char *a, char *b)
 {
     int i = 0;
     char *out = NULL;
-    int sizeA = size(a);
-    int sizeB = size(b);
+    int sizeA = length(a);
+    int sizeB = length(b);
     
     out = (char*)malloc(sizeof(char)*(sizeA + sizeB));
     for(i=0; i<sizeA; i++)
@@ -61,8 +61,8 @@ char* concat(char *a, char *b)
 int concat2(char *a, char *b, char **out)
 {
     int i = 0;
-    int sizeA = size(a);
-    int sizeB = size(b);
+    int sizeA = length(a);
+    int sizeB = length(b);
     char *c = NULL;
 
     if (out == NULL)

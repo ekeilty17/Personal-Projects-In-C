@@ -1,15 +1,15 @@
 const int MAXV = 1000; /*maximum number of vertices*/
 
 struct edgeNode {
-    int y;                  /* adjacency info */
-    int weight;             /* edge weight, if any */
-    struct edgeNode *next;  /* next edge in list */
+    int y;                      /* adjacency info */
+    int weight;                 /* edge weight, if any */
+    struct edgeNode *next;      /* next edge in list */
 };
 typedef struct edgeNode edgeNode;
 
 struct graph {
     edgeNode *edges[MAXV+1];    /* adjacency info */
-    int degree[MAXV+1];         /* outdegree of each vertex */
+    int outdegree[MAXV+1];      /* outdegree of each vertex */
     int nvertices;              /* number of vertices in graph */
     int nedges;                 /* number of edges in graph */
     bool directed;              /* is the graph directed? */
@@ -35,7 +35,7 @@ int init(graph *g, bool directed)
     return 0;
 }
 
-int insert_edge(graph *g, int x, int y, bool directed)
+int add_edge(graph *g, int x, int y, bool directed)
 {
     edgeNode *p = NULL;
     if (g == NULL)

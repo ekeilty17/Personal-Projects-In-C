@@ -1,150 +1,50 @@
-struct llnode {            /* since the llnode is a self-referential structure */
-    int val;                /* we can not compile the struct and typedef decl into one */
-    struct llnode *next;
-    struct llnode *prev;
-};
-typedef struct llnode llnode;
+#include "ll_lib.c"
 
-/*
-list of all the functions
-int ll_add_to_head( llnode **head, int val);
-int ll_add_to_tail( llnode **head, int val);
-int ll_print( llnode *p);
-int ll_print_more( llnode *p);
-int ll_free( llnode *p);
-
-int ll_find_by_value(llnode *pList,int val);
-int ll_del_from_tail(llnode **ppList);
-int ll_del_from_head(llnode **ppList);
-int ll_del_by_value(llnode **ppList,int val);
-int ll_insert_in_order(llnode **ppList,int val);
-int ll_concat(llnode **pSrcA,llnode **pSrcB);
-int ll_sort(llnode **ppList);
-*/
-
-int ll_add_to_head( llnode **head, int val) 
+/*index and length are nice things to have access to sometimes*/
+int ll_index(llnode *pList, int index)
 {
-    llnode *original_head = NULL;
-    if (head == NULL) 
+    int i = 0;
+    for(i=0; i<index; i++)
     {
-        return -1;
+        if (pList->next == NULL)
+        {
+            return -1;
+        }
+        else
+        {
+            pList = pList->next;
+        }
     }
-    
-    if (*head == NULL)
+    return pList->val;
+}
+int ll_length(llnode *pList)
+{
+    llnode *curr = pList;
+    int n = 0;
+    while(curr != NULL)
     {
-        *head = ( llnode *) malloc(sizeof( llnode));
-        (*head)->val = val;
-        (*head)->next = NULL;
-        (*head)->prev = NULL;
-        return 0;
+        n += 1;
+        curr = curr->next;
     }
-    else
-    {
-        original_head = *head;
-
-        *head = ( llnode *) malloc(sizeof( llnode));
-        (*head)->val = val;
-        (*head)->next = original_head;
-        (*head)->next->prev = *head;
-        (*head)->prev = NULL;
-    
-        return 0;
-    }
+    return n;
 }
 
-int ll_add_to_tail( llnode **head, int val) 
-{
-    if (head == NULL) 
-    {
-        return -1;
-    }
-    if (*head == NULL)
-    {
-        *head = ( llnode *) malloc(sizeof( llnode));
-        (*head) -> val = val;
-        (*head) -> next = NULL;
-        (*head) -> prev = NULL;
-        
-        return 0;
-    }
-    else if ((*head)->next == NULL) 
-    {
-        (*head) -> next  = ( llnode *) malloc(sizeof( llnode));
-        (*head) -> next -> val = val;
-        (*head) -> next -> next = NULL;
-        (*head) -> next -> prev = *head;
-        
-        return 0;
-    }
-    else 
-    { /* recursively call ll_add_to_tail until we get to the tail
-         which is the point where the pointer is NULL */
-        return ll_add_to_tail(&((*head)->next), val);
-    }
-}
-
-int ll_print( llnode *p)
-{
-    if (p==NULL)
+/*searching*/
+llnode* ll_search(llnode *pList, int val)
+{   
+    if (pList == NULL)
     {   
-        return 0;
+        return NULL;
+    }
+    if (pList->val == val)
+    {   
+        return pList;
     }
     else
-    {
-        printf("val = %d\n",p->val);
-        return ll_print(p->next);
+    {   
+        return ll_search(pList->next, val);
     }
 }
-
-int ll_print_more( llnode *p) 
-{
-    if (p==NULL) 
-    {
-        return 0;
-    }
-    else if ((p->next == NULL) && (p->prev == NULL))
-    {
-        printf("val = %d\n",p->val);
-        printf("\t prev = NULL\t\tprev->val = NULL\n");
-        printf("\t next = NULL\t\t next->val = NULL\n");
-        return 0;
-    }
-    else if (p->next == NULL)
-    {
-        printf("val = %d\n",p->val);
-        printf("\t prev = %d\tprev->val = %d\n",p->prev,p->prev->val);
-        printf("\t next = NULL\t\t next->val = NULL\n");
-        return 0;
-    }
-    else if (p->prev == NULL)
-    {
-         printf("val = %d\n",p->val);
-         printf("\t prev = NULL\t\tprev->val = NULL\n");
-         printf("\t next = %d\t next->val = %d\n",p->next,p->next->val);
-         return ll_print_more(p->next);
-    }
-    else
-    {
-        printf("val = %d\n",p->val);
-        printf("\t prev = %d\tprev->val = %d\n",p->prev,p->prev->val);
-        printf("\t next = %d\t next->val = %d\n",p->next,p->next->val);
-        return ll_print_more(p->next);
-    }
-}
-
-int ll_free( llnode *p) 
-{
-    if (p==NULL) {
-        return -1;
-    } 
-    else 
-    {
-        llnode *f=p->next;
-        free(p);
-        return ll_free(f);
-    }
-}
-
 int ll_find_by_value(llnode *pList,int val)
 {
     if(pList==NULL)
@@ -164,46 +64,8 @@ int ll_find_by_value(llnode *pList,int val)
     }
 }
 
-int ll_del_from_tail(llnode **ppList)
-{
-    struct llnode *temp = NULL;
-    if (ppList == NULL)
-    {
-        return -1;
-    }
-    
-    if ((*ppList)->next == NULL)
-    {
-        temp = *ppList;
-        *ppList = NULL;
-        free(temp);
-        return 0;
-    }
-    else
-    {
-        return ll_del_from_tail(&((*ppList)->next));
-    }
-}
-
-int ll_del_from_head(llnode **ppList)
-{
-    struct llnode *temp = NULL;
-    
-    if (ppList == NULL)
-    {
-        return -1;
-    }   
-    
-    temp = *ppList;
-    *ppList = temp->next;
-    (*ppList)->prev = NULL;
-    free(temp);
-    
-    return 0;   
-
-}
-
-int ll_del_by_value(llnode **ppList,int val)
+/*delete*/
+int ll_delete(llnode **ppList,int val)
 {
     int r = 0;
     struct llnode *temp = NULL;
@@ -230,11 +92,12 @@ int ll_del_by_value(llnode **ppList,int val)
     }
     else
     {
-        return ll_del_by_value(&((*ppList)->next),val);
+        return ll_delete(&((*ppList)->next),val);
     }
 
 }
 
+/*this function assumes the list is in numerical order*/
 int ll_insert_in_order(llnode **ppList,int val) 
 {
     llnode *prev = NULL;
@@ -280,6 +143,7 @@ int ll_insert_in_order(llnode **ppList,int val)
     }
 }
 
+/*merge two lists*/
 int ll_concat(llnode **pSrcA,llnode **pSrcB)
 {
     if(pSrcA == NULL)

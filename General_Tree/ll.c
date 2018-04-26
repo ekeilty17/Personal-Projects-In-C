@@ -1,3 +1,4 @@
+/*
 int ll_add_to_head(llnode **head, TreeNode *tree) 
 {
     llnode *old_head;
@@ -12,6 +13,7 @@ int ll_add_to_head(llnode **head, TreeNode *tree)
     (*head) -> next = old_head;
     return 0;
 }
+*/
 
 int ll_add_to_tail(llnode **head, TreeNode *tree) 
 {
@@ -27,25 +29,8 @@ int ll_add_to_tail(llnode **head, TreeNode *tree)
         return 0;
     } 
     else 
-    { /* recursively call ll_add_to_tail until we get to the tail
-         which is the point where the pointer is NULL */
+    {
         return ll_add_to_tail(&((*head)->next), tree);
-    }
-}
-
-TreeNode* ll_find_by_value(llnode *pList, int val)
-{
-    if(pList == NULL)
-    {
-        return NULL;
-    }
-    if((pList->tree->val) == val)
-    {
-        return pList->tree;
-    }
-    else
-    {
-        return ll_find_by_value(pList->next, val);
     }
 }
 
@@ -64,6 +49,22 @@ int ll_free(llnode *p)
 }
 
 /*
+TreeNode* ll_find_by_value(llnode *pList, int val)
+{
+    if(pList == NULL)
+    {
+        return NULL;
+    }
+    if((pList->tree->val) == val)
+    {
+        return pList->tree;
+    }
+    else
+    {
+        return ll_find_by_value(pList->next, val);
+    }
+}
+
 int ll_print_from_head(llnode *p) 
 {
     if (p==NULL) 

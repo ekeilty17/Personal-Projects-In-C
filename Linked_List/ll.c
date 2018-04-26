@@ -1,115 +1,57 @@
-struct llnode {            /* since the llnode is a self-referential structure */
-   int val;                /* we can not compile the struct and typedef decl into one */
-   struct llnode *next;
-};
-typedef struct llnode llnode;
+#include "ll_lib.c"
 
-/*
-list of the functions
-int ll_add_to_head( llnode **head, int val);
-int ll_add_to_tail( llnode **head, int val);
-int ll_print_from_head( llnode *p);
-int ll_print_from_tail( llnode *p);
-int ll_free( llnode *p);
-
-int ll_find_by_value(llnode *pList,int val);
-int ll_del_from_tail(llnode **ppList);
-int ll_del_from_head(llnode **ppList);
-int ll_del_by_value(llnode **ppList,int val);
-int ll_insert_in_order(llnode **ppList,int val);
-int ll_concat(llnode **pSrcA,llnode **pSrcB);
-int ll_sort(llnode **ppList);
-int ll_index(llnode *pList, int index);
-int ll_length(llnode *pList);
-*/
-
-int ll_add_to_head( llnode **head, int val) 
+/*index and length are nice things to have access to sometimes*/
+int ll_index(llnode *pList, int index)
 {
-    llnode *old_head;
-    if (head == NULL) 
+    int i = 0;
+    for(i=0; i<index; i++)
     {
-        return -1;
+        if (pList->next == NULL)
+        {
+            return -1;
+        }
+        else
+        {
+            pList = pList->next;
+        }
     }
-    old_head = *head;
-
-    *head = ( llnode *) malloc(sizeof( llnode));
-    (*head) -> val = val;
-    (*head) -> next = old_head;
-    return 0;
+    return pList->val;
+}
+int ll_length(llnode *pList)
+{
+    llnode *curr = pList;
+    int n = 0;
+    while(curr != NULL)
+    {
+        n += 1;
+        curr = curr->next;
+    }
+    return n;
 }
 
-int ll_add_to_tail( llnode **head, int val) 
-{
-    if (head == NULL) 
+/*searching*/
+llnode* ll_search(llnode *pList, int val)
+{   
+    if (pList == NULL)
     {
-        return -1;
+        return NULL;
     }
-    if (*head == NULL) 
+    if (pList->val == val)
     {
-        *head = ( llnode *) malloc(sizeof( llnode));
-        (*head) -> val = val;
-        (*head) -> next = NULL;
-        return 0;
-    } 
-    else 
-    { /* recursively call ll_add_to_tail until we get to the tail
-         which is the point where the pointer is NULL */
-        return ll_add_to_tail(&((*head)->next), val);
-    }
-}
-
-int ll_print_from_head(llnode *p) 
-{
-    if (p==NULL) 
-    {
-        return 0;
-    } 
-    printf("val = %d\n",p->val);
-    return ll_print_from_head(p->next);
-}
-
-int ll_print_from_tail(llnode *p)
-{
-    if (p==NULL) 
-    { 
-        return 0; 
-    }
-    else 
-    {
-      if (p->next == NULL) 
-      {
-          printf("%d\n",p->val);
-          return 0;
-      }
-      else 
-      {
-          ll_print_from_tail(p->next);
-          printf("%d\n",p->val);
-          return 0;
-      }
-   }
-}
-
-int ll_free( llnode *p) 
-{
-    if (p==NULL) {
-        return -1;
+        return pList;
     }
     else
     {
-        llnode *f=p->next;
-        free(p);
-        return ll_free(f);
+        return ll_search(pList->next, val);
     }
-}
-
-int ll_find_by_value(llnode *pList,int val)
+} 
+int ll_find_by_value(llnode *pList, int val)
 {
     if(pList==NULL)
     {
         return -1;
     }
-    if((pList->val)==val)
+    if(pList->val == val)
     {
         return 0;
     }
@@ -119,51 +61,8 @@ int ll_find_by_value(llnode *pList,int val)
     }
 }
 
-int ll_del_from_tail(llnode **ppList)
-{
-    struct llnode *temp = NULL;
-    /*  ppList is an int**
-        therefore *ppList is the address of the pointer
-        and ppList is the address of the address of the pointer
-        *ppList is the address of the first element in the list
-        **ppList is the value at the first element in the list
-     */
-    /*  checks if any memory was allovated to the  pointer...aka if it was initialized */
-    if (ppList == NULL)
-    {
-        return -1;
-    }
-    if ((*ppList)->next == NULL)
-     {
-         temp = *ppList;
-         *ppList = NULL;
-         free(temp);
-         return 0;
-     }
-    else
-    {
-        return ll_del_from_tail(&((*ppList)->next));
-    }
-}
-
-int ll_del_from_head(llnode **ppList)
-{
-    struct llnode *temp = NULL;
-    
-    if (ppList == NULL)
-    {
-        return -1;
-    }   
-    
-    temp = *ppList;
-    *ppList = temp->next;
-    free(temp);
-    
-    return 0;   
-
-}
-
-int ll_del_by_value(llnode **ppList,int val)
+/*delete*/
+int ll_delete(llnode **ppList,int val)
 {
     struct llnode *temp = NULL;
     
@@ -172,7 +71,7 @@ int ll_del_by_value(llnode **ppList,int val)
         return -1;
     } 
    
-    if (((*ppList)->val) == val)
+    if ((*ppList)->val == val)
     {
         temp = *ppList;
         *ppList = temp->next;
@@ -181,7 +80,7 @@ int ll_del_by_value(llnode **ppList,int val)
     }
     else
     {
-        return ll_del_by_value(&((*ppList)->next),val);
+        return ll_delete(&((*ppList)->next),val);
     }
 
 }
@@ -238,6 +137,7 @@ int ll_insert_in_order(llnode **ppList,int val)
     }
 }
 
+/*merge two lists*/
 int ll_concat(llnode **pSrcA,llnode **pSrcB)
 {
     if(pSrcA == NULL)
@@ -258,6 +158,57 @@ int ll_concat(llnode **pSrcA,llnode **pSrcB)
     {
         return ll_concat(&((*pSrcA)->next),pSrcB);
     }
+}
+
+/*get parent node*/
+llnode* ll_parent(llnode *head, llnode *curr)
+{
+    llnode *temp = NULL;
+    if (head == NULL)
+    {
+        return NULL;
+    }
+    temp = head;
+    while (temp != NULL)
+    {
+        if (temp->next == curr)
+        {
+            break;
+        }
+        temp = temp->next;
+    }
+    return temp;
+}
+
+/*reverse the direction of a linked list*/
+int ll_reverse(llnode **ppList)
+{
+    llnode *parent = NULL;
+    llnode *curr = NULL;
+    llnode *temp = NULL;
+    if (ppList == NULL)
+    {
+        return -1;
+    }
+    if (*ppList == NULL)
+    {
+        return 0;
+    }
+    if ((*ppList)->next == NULL)
+    {
+        return 0;
+    }
+    parent = NULL;
+    curr = *ppList;
+    while (curr != NULL)
+    {
+        temp = curr->next;
+        curr->next = parent;
+        parent = curr;
+        curr = temp;
+    }
+    *ppList = parent;
+    return 0;
 }
 
 int ll_sort(llnode **ppList)
@@ -298,33 +249,4 @@ int ll_sort(llnode **ppList)
     }
     *ppList = address_start_list;
     return 0;
-}
-
-int ll_index(llnode *pList, int index)
-{
-    int i = 0;
-    for(i=0; i<index; i++)
-    {
-        if (pList->next == NULL)
-        {
-            return -1;
-        }
-        else
-        {
-            pList = pList->next;
-        }
-    }
-    return pList->val;
-}
-
-int ll_length(llnode *pList)
-{
-    llnode *curr = pList;
-    int n = 0;
-    while(curr != NULL)
-    {
-        n += 1;
-        curr = curr->next;
-    }
-    return n;
 }

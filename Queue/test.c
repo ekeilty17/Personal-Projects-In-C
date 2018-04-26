@@ -57,6 +57,32 @@ int main(void)
     r=isFull(q, &pval);
     printf("isFull(s) = %d\n",pval);
     
+    
+    printf("\n");
+    r=deq(&q, &pval);
+    r=print_queue(q);
+    printf("\n");
+    r=deq(&q, &pval);
+    r=print_queue(q);
+    printf("\n");
+    r=deq(&q, &pval);
+    r=print_queue(q);
+    printf("\n");
+    r=deq(&q, &pval);
+    r=print_queue(q);
+    printf("\n");
+    r=deq(&q, &pval);
+    r=print_queue(q);
+    printf("\n");
+    r=deq(&q, &pval);
+    r=print_queue(q);
+    r=enq(&q, 10);
+    r=enq(&q, 20);
+    r=enq(&q, 30);
+    r=enq(&q, 40);
+    printf("\n");
+    r=print_queue(q);
+    
     r=free_queue(q);
 
     return 0;

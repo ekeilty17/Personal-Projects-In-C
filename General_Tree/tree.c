@@ -109,70 +109,32 @@ int Level_Order(TreeNode *root)
     }
     return 0;
 }
-/*
-TreeNode* searchTree_rec(TreeNode *root, int val, llnode *succs)
+
+/*this will also do a "pre order"-esque traversal*/
+TreeNode* searchTree(TreeNode *root, int val)
 {
-    TreeNode *temp = NULL;
+    TreeNode *node = NULL;
     llnode *curr = NULL;
-    int r = -1;
     if (root == NULL)
     {
         return NULL;
     }
     if (root->val == val)
     {
-        printf("hi\n");
         return root;
     }
     else
     {
-        temp = ll_find_by_value(succs, val);
-        if (temp == NULL)
+        curr = root->succs;
+        /*if curr == NULL we are at the end of the succs
+          if node == NULL then we still havent found the node*/
+        while ((curr != NULL) && (node == NULL))
         {
-            curr = root->succs;
-            while (curr != NULL)
-            {
-                printf("%d\n",curr->tree->val);
-                return searchTree_rec(curr->tree, val, curr->tree->succs);
-                curr = curr->next;
-            }
+            /*printf("%d\n",curr->tree->val);*/
+            node=searchTree(curr->tree, val);
+            curr = curr->next;
         }
-        return temp;
-    }
-}
-TreeNode* searchTree(TreeNode *root, int val)
-{
-    return searchTree_rec(root, val, root->succs);
-}
-*/
-TreeNode* searchTree(TreeNode *root, int val)
-{
-    TreeNode *temp = NULL;
-    llnode *curr = NULL;
-    int r = -1;
-    if (root == NULL)
-    {
-        return NULL;
-    }
-    if (root->val == val)
-    {
-        printf("hi\n");
-        return root;
-    }
-    else
-    {
-        temp = ll_find_by_value(root->succs, val);
-        if (temp == NULL)
-        {
-            curr = root->succs;
-            while (curr != NULL)
-            {
-                printf("%d\n",curr->tree->val);
-                return searchTree(curr->tree, val);
-                curr = curr->next;
-            }
-        }
-        return temp;
+        return node;
     }
 }
 

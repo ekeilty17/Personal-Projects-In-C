@@ -19,15 +19,15 @@ int main(void)
     r=add(&tree, 700);
     */
     
-    r=add(&tree, 8);
+    r=add(&tree, -1);
+    r=add(&tree, 0);
+    r=add(&tree, 1);
+    r=add(&tree, 3);
+    r=add(&tree, 4);
+    r=add(&tree, 5);
     r=add(&tree, 6);
     r=add(&tree, 7);
-    r=add(&tree, 5);
-    r=add(&tree, 3);
-    r=add(&tree, 1);
-    r=add(&tree, 4);
-    r=add(&tree, 0);
-    r=add(&tree, -1);
+    r=add(&tree, 8);
     
     printf("\nPrint Depth\n");
     r=printDepth(tree);

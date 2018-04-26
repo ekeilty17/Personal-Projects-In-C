@@ -43,14 +43,15 @@ int main(void)
         printf("does 1000 exist? %d\n",temp->val);
     } 
     printf("\n");
-    temp=searchTree(x, 120);
+    r = 6;
+    temp=searchTree(x, r);
     if (temp == NULL)
     {
-        printf("does 120 exist? NULL\n");
+        printf("does %d exist? NULL\n",r);
     }
     else
     {
-        printf("does 120 exist? %d\n",temp->val);
+        printf("does %d exist? %d\n",r,temp->val);
     }
     printf("\n");
     temp=searchTree(x, 789);

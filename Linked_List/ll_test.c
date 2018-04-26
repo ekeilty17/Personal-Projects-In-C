@@ -8,6 +8,7 @@ int main(void)
     llnode *B = NULL;
     llnode *seq = NULL;
     llnode *unordered = NULL;
+    llnode *temp = NULL;
     int r=0;
     int i=0;
     int l=0;
@@ -69,7 +70,7 @@ int main(void)
 
     /*testing ll_del_by_value*/
     printf("\n\nseq with the value 400 deleted\n");
-    r=ll_del_by_value(&seq,400);
+    r=ll_delete(&seq,400);
     r=ll_print_from_head(seq);
     
     
@@ -106,7 +107,7 @@ int main(void)
     r=ll_sort(&A);
     r=ll_print_from_head(A);
    
-    /*testing index and length*/
+    /*testing ll_index and ll_length*/
     printf("\n\nindexing seq from 0 to 14\n");
     r=ll_print_from_head(seq);
     printf("\n");
@@ -118,9 +119,35 @@ int main(void)
         printf("seq at index %d = %d\n",i,r);
     }
     
+    /*testing ll_parent*/
+    printf("\n\nfinding the parent nodes\n");
+    temp = ll_parent(seq, seq);
+    if (temp == NULL)
+    {
+        printf("parent of %d = NULL\n", seq->val);
+    }
+    else
+    {
+        printf("parent of %d = %d\n", seq->val, temp->val);
+    }
+    temp = ll_parent(seq, seq->next->next);
+    if (temp == NULL)
+    {
+        printf("parent of %d = NULL\n", seq->val);
+    }
+    else
+    {
+        printf("parent of %d = %d\n", seq->next->next->val, temp->val);
+    }
+    
+    /*reversing the order of the linked list*/
+    printf("\n\nreversing the order of seq\n");
+    r=ll_reverse(&seq);
+    r=ll_print_from_head(seq);
+
     /*freeing shit*/
     r=ll_free(A);
-    r=ll_free(B);
+    /*since we concatinated A with B, B was already freed*/
     r=ll_free(seq);
     r=ll_free(unordered);
     return 0;

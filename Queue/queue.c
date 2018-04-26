@@ -5,6 +5,7 @@ struct Queue {
 	int *store; /*the array with the elements*/
 	int max_size;
 	int size;
+        int start;
 };
 typedef struct Queue Queue;
 
@@ -21,6 +22,7 @@ int init(Queue *x)
     }
     x->max_size = SIZE;
     x->size = 0;
+    x->start = 0;
     return 0;
 }
 
@@ -35,7 +37,7 @@ int enq(Queue *x, int val)
         /*blew the memory*/
         return -1;
     }
-    x->store[x->size] = val;
+    x->store[(x->start + x->size) % x->max_size] = val;
     x->size += 1;
     return 0;
 }
@@ -56,11 +58,9 @@ int deq(Queue *x, int *pval)
     {
         return -1;
     }
-    *pval = x->store[0];
-    for (i=0; i<(x->size-1); i++)
-    {
-        x->store[i] = x->store[i+1];
-    }
+    *pval = x->store[x->start];
+    x->store[x->start] = 0;
+    x->start = (x->start + 1) % x->max_size;
     x->size -= 1;
     return 0;
 }
@@ -106,7 +106,7 @@ int print_queue(Queue x)
     int i = 0;
     for (i=(x.size-1); i>=0; i--)
     {
-        printf("%d\n",x.store[i]);
+        printf("%d\n",x.store[(i+x.start)%x.max_size]);
     }
     return 0;
 }

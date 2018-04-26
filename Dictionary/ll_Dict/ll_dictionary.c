@@ -1,3 +1,8 @@
+/*this was my original dictionary, it was just a linked list
+  so that I could get it to work
+  however, sorted sinlge linked list dictionaries are very inefficient
+  doubly sorted linked list dictionaries are better */
+
 struct dict {
     char *key;
     char *def;

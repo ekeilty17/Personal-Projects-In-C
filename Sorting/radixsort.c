@@ -4,13 +4,12 @@
 #include <stdlib.h>
 #include <math.h>
 
-int radix_sort(int *A, int sizeA)
+int radix_sort(int *A, int sizeA, int base)
 {
     int **buckets;
     int *bucket_idx;
     int iteration = 0;
     int digit = 0;
-    int base = 10;
     int i = 0;
     int j = 0;
     int c = 0;
@@ -114,7 +113,7 @@ int main(void)
     }
     printf("\n\n");
     
-    r=radix_sort(x,n);
+    r=radix_sort(x,n,10);
     printf("Sorted List\n");
     for (i=0; i<n; i++)
     {

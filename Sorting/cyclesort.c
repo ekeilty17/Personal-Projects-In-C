@@ -1,13 +1,17 @@
 /*O(n) = n^2*/
 #include <stdio.h>
+#include <stdlib.h>
 
 int cyclesort(int *A, int sizeA)
 {
     int i = 0;
-    int j = 0;
-    int cnt = 0;
-    int element = 0;
+    int *visited = (int *)malloc(sizeof(int)*sizeA);
+    int all_visited = 0;
+    int start = 0;
+    int greater = 0;
     int temp = 0;
+    
+    //Error Checks
     if (A == NULL)
     {
         return -1;
@@ -16,21 +20,66 @@ int cyclesort(int *A, int sizeA)
     {
         return -1;
     }
-    element = A[0];
-    for (i=0; i<sizeA-1; i++)
+    
+    //initalize visited to all False
+    visited[start] = 1;
+    for (i=1; i<sizeA; i++)
     {
-        cnt = 0;
-        for (j=0; j<sizeA; j++)
+        visited[i] = 0;
+    }
+    
+    while (!all_visited)
+    {
+        // We are always swapping with the start index, 
+        //      the start index acts as our place-holder until eventually the correct elements gets placed there
+        // Once the value in the start index is in the correct place, we have to find a new start
+        //      Hence the visited array
+        // If all nodes are visited then we are done
+        
+        // count the number of elements than A[start] is greater than 
+        // and that will be the correct index of A[start]
+        greater = 0;
+        for (i=0; i<sizeA; i++)
         {
-            if ((j != element) && (A[j] < element))
+            //                  change    V        for a descending list
+            if ((i != start) && (A[start] > A[i]))
             {
-                cnt += 1;
+               greater += 1;
             }
         }
-        printf("element: %d\tcnt: %d\n",element, cnt);
-        temp = element;
-        element = A[cnt];
-        A[cnt] = temp;
+        
+        if (greater != start)
+        {
+            // This is to deal with the case of repeated numbers in the list
+            while (A[greater] == A[start])
+            {
+                greater += 1;
+            }
+            // swapping start with the element in the correct position
+            temp = A[greater];
+            A[greater] = A[start];
+            A[start] = temp;
+            // update visited array
+            visited[greater] = 1;
+        }
+        else
+        {
+            // if greater == start 
+            // then we've reached the end of a subcycle and we need to find a new one
+            all_visited = 1;
+            for (i=0; i<sizeA; i++)
+            {
+                if (visited[i] == 0)
+                {
+                    start = i;
+                    visited[start] = 1;
+                    all_visited = 0;
+                    break;
+                }
+            }
+            // if we get to the end of the for loop and a new start has not been found
+            // then all_visited will be True and the while loop will break
+        }
     }
     return 0;
 }

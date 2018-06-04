@@ -1,6 +1,9 @@
 #include <stdio.h>
 
 
+// A Bitonic Sequence is sequence such that the first half is ascending and the second half is descending
+// If we have a bitonic sequence, then we can merge it similar to how we merge 2 lists in merge sort
+
 int* bitonicsort_rec(int *x, int sizeX, int up)
 {
     int *first = NULL;

@@ -13,6 +13,7 @@ A lot of what makes C hard to those who are new to programming is the distinctio
 
 
 ## Miscellaneous
+
 * Create common masks for Bitwise operations
 * Implement a null-terminated-string
 * Swap the value of two variables

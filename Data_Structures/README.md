@@ -1,7 +1,7 @@
 # C
 A repository of useful tools and data structures I've made in C. The purpose of this repository is to have a library of useful and working data structures. 
 
-## Common Tyes Data Structures
+## Common Types Data Structures
 
 * Stack
 * Queue

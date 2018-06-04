@@ -27,6 +27,7 @@ A repository of everything interesting I have created in the langauge C. Since C
 ## Searching
 
 * Binary Search
+* Linear Search
 
 ## Sorting
 
